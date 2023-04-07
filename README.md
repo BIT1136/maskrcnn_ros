@@ -4,7 +4,7 @@
 
 ## 安装
 
-    git clone --recurse-submodules
+    git clone --recurse-submodules git@github.com:BIT1136/maskrcnn_ros.git
 
 ## 安装依赖
 
