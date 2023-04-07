@@ -1,0 +1,3 @@
+<launch>
+  <node pkg="maskrcnn_ros" type="node.py" name="maskrcnn_ros_server" cwd="node" output="screen"/>
+</launch>

@@ -1,0 +1,5 @@
+# rgb8 格式的原始图像 (M, N, 3)
+sensor_msgs/Image input
+---
+# mono8 格式的分割结果,0表示背景
+sensor_msgs/Image seg
