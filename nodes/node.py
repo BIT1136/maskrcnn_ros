@@ -26,10 +26,12 @@ def seg_callback(req):
     _, predict_classes, _, predict_masks = seg.predict(img)
     label_mask = np.zeros(shape[:2], dtype=np.uint8)
     mask_threshold = 0.5
-    num_instances = len(predict_classes)
+    num_instances = len(predict_masks)
+    class_map=[0]*(num_instances+1)
     for i in range(num_instances):
         index = np.where(predict_masks[i] > mask_threshold)
         label_mask[index] = i + 1
+        class_map[i+1]=predict_classes[i]
 
     t_end = time.perf_counter()
     rospy.loginfo(f"实例分割完成,检测到 {num_instances} 个实例,耗时 {(t_end - t_start)*1000:.2f}ms")
@@ -40,7 +42,7 @@ def seg_callback(req):
 
 
 if __name__ == "__main__":
-    model_path = "../models/model_19.pth"
+    model_path = "../models/model_of_toy.pth"
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     rospy.logdebug(f"加载实例分割网络 {model_path}")
     seg = Segmentation(model_path, device)
