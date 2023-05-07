@@ -1,7 +1,7 @@
 # rgb8 格式的原始图像 (M, N, 3)
 sensor_msgs/Image input
 ---
-# mono8 格式的分割结果,0表示背景
+# mono8 格式的分割结果,0表示背景,i表示i号实例
 sensor_msgs/Image seg
 # 实例类别,classes[i]表示i号实例的类别,classes[0]=0
 uint8[] classes

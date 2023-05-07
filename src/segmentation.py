@@ -13,9 +13,13 @@ class Segmentation:
     def __init__(self, model_path, device):
         assert os.path.exists(model_path), "模型文件不存在"
         self.device = device
+        weights_dict = torch.load(model_path, map_location=self.device)
+        weights_dict = (
+            weights_dict["model"] if "model" in weights_dict else weights_dict
+        )
 
-        num_classes = 2  # 不包含背景
-        box_thresh = 0.8
+        num_classes = weights_dict["roi_heads.box_predictor.cls_score.weight"].shape[0]-1
+        box_thresh = 0.5
 
         backbone = torchvision.models.mobilenet_v3_large()
         return_layers = {
@@ -56,10 +60,6 @@ class Segmentation:
             box_score_thresh=box_thresh,
         )
 
-        weights_dict = torch.load(model_path, map_location=self.device)
-        weights_dict = (
-            weights_dict["model"] if "model" in weights_dict else weights_dict
-        )
         self.model.load_state_dict(weights_dict)
         self.model.to(self.device)
         self.model.eval()
