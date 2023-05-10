@@ -32,11 +32,10 @@ def seg_callback(req):
         res.seg = ros_numpy.msgify(Image, np.zeros_like(img,dtype=np.uint8), encoding="mono8")
         return res
     label_mask = np.zeros(shape[:2], dtype=np.uint8)
-    mask_threshold = 0.5
     num_instances = len(predict_masks)
     class_map=[0]*(num_instances+1)
     for i in range(num_instances):
-        index = np.where(predict_masks[i] > mask_threshold)
+        index = np.where(predict_masks[i] ==1)
         label_mask[index] = i + 1
         class_map[i+1]=predict_classes[i]
 
@@ -75,6 +74,7 @@ def pseudo_seg(req):
         mask=color_masks[i]
         mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel1,iterations=1)
         mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel2,iterations=1)
+        mask = cv2.erode(mask, kernel2, iterations=1)
         num_objs,labels=cv2.connectedComponents(mask)
         print(num_objs)
         for j in range(num_objs-1):

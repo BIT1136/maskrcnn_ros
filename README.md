@@ -8,11 +8,11 @@
 
 ## 安装依赖
 
-使用 conda/mamba 创建虚拟环境并安装依赖：
+使用 conda 创建虚拟环境并安装依赖：
 
-    conda create -n maskrcnn_ros python=3.10 pytorch=1.13 torchvision numpy
+    conda create -n maskrcnn_ros python=3.10 pytorch=1.13 torchvision=0.14 numpy=1.24 rospkg=1.5
 
-可能兼容更旧的环境。确保运行节点时 `PATH` 环境变量中的 python 解释器可以访问依赖包。
+可能兼容其它版本的环境；安装时.condarc中排首位的频道为conda-forge。
 
 ## 添加模型
 
