@@ -16,8 +16,11 @@ from segmentation import Segmentation
 
 def seg_callback(req):
     global seg
+    save_inter_data=False
     img: np.ndarray = ros_numpy.numpify(req.input)
-    # np.save("../tests/rgb.npy",img)
+    t=int(time.time())
+    if save_inter_data:
+        np.save(f"../tests/img{t}.npy",img)
     shape = img.shape
     rospy.loginfo(f"开始实例分割 {shape}")
     t_start = time.perf_counter()
@@ -27,7 +30,6 @@ def seg_callback(req):
     img = np.clip(img - img.mean(), -1, 1)
     try:
         _, predict_classes, _, predict_masks = seg.predict(img)
-        print(predict_classes)
     except Exception as e:
         rospy.logerr(f"Maskrcnn预测失败: {e}")
         res = InstanceSegResponse()
@@ -45,18 +47,14 @@ def seg_callback(req):
         inst_mask = np.zeros_like(label_mask, dtype=bool)
         inst_mask[np.where(predict_masks[i] > 0.1)] = True
         index = np.logical_and(inst_mask, label_mask == 0)
-        print(index.sum())
         label_mask[index] = inst_id
         inst_id += 1
         class_map.append(predict_classes[i])
-    # np.save("../tests/label_mask.npy",label_mask)
-    print(class_map)
+    if save_inter_data:
+        np.save(f"../tests/mask{t}.npy",label_mask)
 
-    print(len(np.where(label_mask == 1)[0]))
-    print(len(np.where(label_mask == 2)[0]))
-    print(len(np.where(label_mask == 3)[0]))
     t_end = time.perf_counter()
-    rospy.loginfo(f"实例分割完成,检测到 {num_instances} 个实例,耗时 {(t_end - t_start)*1000:.2f}ms")
+    rospy.loginfo(f"实例分割完成,检测到 {num_instances} 个实例{class_map},耗时 {(t_end - t_start)*1000:.2f}ms")
 
     res = InstanceSegResponse()
     res.seg = ros_numpy.msgify(Image, label_mask, encoding="mono8")
@@ -118,7 +116,7 @@ def pseudo_seg(req):
 
 
 if __name__ == "__main__":
-    pseudo = False
+    pseudo = True
 
     if not pseudo:
         model_path = "../models/model_25_coco.pth"
