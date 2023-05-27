@@ -10,9 +10,7 @@
 
 使用 conda 创建虚拟环境并安装依赖：
 
-    conda create -n maskrcnn_ros python=3.10 pytorch=1.13 torchvision=0.14 numpy=1.24 rospkg=1.5
-
-可能兼容其它版本的环境；安装时.condarc中排首位的频道为conda-forge。
+    conda create -c conda-forge -n maskrcnn_ros python=3.10 pytorch=1.13 torchvision=0.14 numpy=1.19 rospkg=1.5
 
 ## 添加模型
 
